@@ -1,0 +1,2 @@
+('C:\\Users\\NRGfr\\PycharmProjects\\RulesAsCode\\build\\Evaluation\\PYZ-00.pyz',
+ [])
