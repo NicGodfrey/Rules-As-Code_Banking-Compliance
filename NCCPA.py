@@ -1,8 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from Definitions import *
 from Functions import *
 from tribool import Tribool
 import Results
+import config
 
 def s126(licensee, consumer, contract, civilUnits, criminalUnits):
     localContraventions = {}
@@ -48,14 +49,24 @@ def s126(licensee, consumer, contract, civilUnits, criminalUnits):
         # 126(2)
         print("Which of the following are true? The provided credit guide: ")
         for req in creditGuideRequirements:
-            creditGuideRequirements[req] = bool_input(req)
-            if not creditGuideRequirements[req]:
+            creditGuideRequirements[req] = bool_input(req) #TODO UNCERTAINTY
+            if creditGuideRequirements[req] == False:
                 creditGuideContraventions.append(req)
-        if bool_input("Was the credit guide provided in the manner (if any) prescribed by the regulations? "):
-            creditGuide.regulationManner = True
-        else:
+            elif creditGuideRequirements[req] == None:
+                Results.Uncertainties.append("\t\t\t --Whether the credit guide" + req[1:-1] + ". This is relevant for "
+                                                                                               "determining whether "
+                                                                                               "s126(2) has been "
+                                                                                               "breached.")
+        creditGuide.regulationManner = bool_input("Was the credit guide provided in the manner (if any) prescribed "
+                                                 "by the regulations? ")
+        if creditGuide.regulationManner == None:
+            Results.Uncertainties.append(
+                "\t\t\t --Whether the credit guide was given in the manner (if any) prescribed by the regulations. "
+                "This is relevant for determining whether s126(4) has been breached.")
+        elif creditGuide.regulationManner == False:
             c126_4.append("failing to provide %s with the credit guide in the manner prescribed by the regulations"
                           % consumer.name)
+
     elif creditGuide.exists == None:
         Results.Uncertainties.append("\t\t\t --Whether %s provided %s with their credit guide. This is relevant for "
                                         "determining whether s126 has been breached by %s."
@@ -127,12 +138,21 @@ def s127(licensee, consumer, contract, civilUnits, criminalUnits):
         # 127(2)
         print("Which of the following are true? The provided credit guide: ")
         for req in creditGuideRequirements:
-            creditGuideRequirements[req] = bool_input(req)
-            if not creditGuideRequirements[req]:
+            creditGuideRequirements[req] = bool_input(req) #TODO UNCERTAINTY
+            if creditGuideRequirements[req] == False:
                 creditGuideContraventions.append(req)
-        if bool_input("Was the credit guide provided in the manner (if any) prescribed by the regulations? "):
-            creditGuide.regulationManner = True
-        else:
+            elif creditGuideRequirements[req] == None:
+                Results.Uncertainties.append("\t\t\t --Whether the credit guide" + req[1:-1] + ". This is relevant for "
+                                                                                               "determining whether "
+                                                                                               "s127(2) has been "
+                                                                                               "breached.")
+        creditGuide.regulationManner = bool_input("Was the credit guide provided in the manner (if any) prescribed "
+                                                 "by the regulations? ")
+        if creditGuide.regulationManner == None:
+            Results.Uncertainties.append(
+                "\t\t\t --Whether the credit guide was given in the manner (if any) prescribed by the regulations. "
+                "This is relevant for determining whether s127(4) has been breached.")
+        elif creditGuide.regulationManner == False:
             c127_4.append("failing to provide %s with the credit guide in the manner prescribed by the regulations"
                           % consumer.name)
     elif creditGuide.exists == None:
@@ -179,19 +199,21 @@ def s128(licensee, consumer, contract, civilUnits, criminalUnits, ADIProviders):
                                "  covers the period in which the credit day occurs " : assessment.coversCreditDay
                                }
 
-    creditDay = datetime.strptime(input("On what day was the credit contract entered into? (dd/mm/yyyy) " ),'%d/%m/%Y')
-    if bool_input("Did %s make an assessment regarding the suitability of the credit contract? " %licensee.name):
-        assessment = document(True)
-        assessmentDay = datetime.strptime(input("On what day was the assessment made? (dd/mm/yyyy) " ),'%d/%m/%Y')
-        if (creditDay - assessmentDay).days > 90:
+    contract.creditDay = datetime.strptime(input("On what day was the credit contract entered into? (dd/mm/yyyy) " ),'%d/%m/%Y')
+    assessment = document(
+        bool_input("Did %s make an assessment regarding the suitability of the credit contract? " % licensee.name))
+
+    if assessment.exists:
+        assessment.day = datetime.strptime(input("On what day was the assessment made? (dd/mm/yyyy) " ),'%d/%m/%Y')
+        if (contract.creditDay - assessment.day).days > 90:
             c128.append("failing to assess the suitability of the credit contract within 90 days of the credit day")
         print("Which of the following are true? The provided credit guide: ")
         for req in assessmentRequirements:
-            assessmentRequirements[req] = bool_input(req)
-            if not assessmentRequirements[req]:
+            assessmentRequirements[req] = bool_input(req) #TODO UNCERTAINTY
+            if assessmentRequirements[req] == False:
                 assessmentContraventions.append(req)
+    #elif indeterminate
     else:
-        creditContract = document(False)
         c128_c.append("failing to assess the suitability of the credit contract with %s" % consumer.name)
 
     s130vars = s130(licensee, consumer, contract, civilUnits, ADIProviders)
@@ -218,29 +240,29 @@ def s128(licensee, consumer, contract, civilUnits, criminalUnits, ADIProviders):
     if localContraventions:
         civilUnits += 5000
 
-    return assessment, localContraventions, civilUnits, criminalUnits
+    return assessment, localContraventions, civilUnits, criminalUnits, contract
 
 def s130(licensee, consumer, contract, civilUnits, ADIProviders):
     c130 = []
-    if not bool_input("Did %s make reasonable inquiries about %s's requirements and objectives in relation to the "
-                          "credit contract? " % (licensee.name, consumer.name)):
+    if bool_input("Did %s make reasonable inquiries about %s's requirements and objectives in relation to the "
+                          "credit contract? " % (licensee.name, consumer.name)) == False:
         c130.append("failing to make reasonable inquiries about %s's requirements and objectives in relation to the "
                     "credit contract" %consumer.name)
 
-    if not bool_input("Did %s make reasonable inquiries about %s's financial situation? "
-                          % (licensee.name, consumer.name)):
+    if bool_input("Did %s make reasonable inquiries about %s's financial situation? "
+                          % (licensee.name, consumer.name))  == False:
         c130.append("failing to make reasonable inquiries about %s's financial situation" %consumer.name)
     else:
-        if not bool_input("Did %s take reasonable steps to verify %s's financial situation? "
-                              % (licensee.name, consumer.name)):
+        if bool_input("Did %s take reasonable steps to verify %s's financial situation? "
+                              % (licensee.name, consumer.name))  == False:
             c130.append("failing to take reasonable steps to verify %s's financial situation" %consumer.name)
 
-    if not bool_input("Did %s make all inquiries prescribed by the regulations? "
-                          % licensee.name):
+    if bool_input("Did %s make all inquiries prescribed by the regulations? "
+                          % licensee.name) == False:
         c130.append("failing to make all inquiries prescribed by the regulations")
 
-    if not bool_input("Did %s ake all steps prescribed by the regulations to verify any prescribed matters? "
-                      %licensee.name):
+    if bool_input("Did %s ake all steps prescribed by the regulations to verify any prescribed matters? "
+                      %licensee.name) == False:
         c130.append("failing to take all steps prescribed by the regulations to verify any prescribed matters")
 
     #130(1A)
@@ -260,8 +282,207 @@ def s130(licensee, consumer, contract, civilUnits, ADIProviders):
         return True, c130
 
 
+def s131(licensee, consumer, contract, assessment, civilUnits, criminalUnits):
+
+    c131=[]
+    localContraventions = {}
+
+    unsuitableChecks = {
+                        #"  %s would be unable to comply with their financial obligations under the contract without"
+                        #" substantial hardship" %consumer.name, #TODO 131(3)
+                              "  the contract would not meet %s's requirements or objectives " % consumer.name :
+                                  contract.notMeetRequirements,
+                              "  any other circumstances prescribed by the regulations in which the contract is "
+                              "unsuitable " : contract.otherwiseUnsuitable
+                              }
+
+    contract.isCreditCard = bool_input("Was the contract a credit card contract? ")
+
+    print("Based off the inquiries made and using only information that %s had reason to believe was true, "
+          "which of the following were likely on %s if the contract was entered into or the credit limit increased "
+          "during the period covered by the assessment?: " %(licensee.name, assessment.day.strftime('%d %b %Y')))
+
+    substantialHardshipResidence = bool_input("  %s would only be able to comply with their financial obligations by "
+                                              "selling their principal place of residence " % consumer.name)
+
+    if (contract.isCreditCard):
+        substantialHardshipCreditCard = bool_input("  %s would be unable to comply with an obligation to repay"
+                                                            " $%s within %s days "
+                                                            %(consumer.name, contract.creditLimit,
+                                                              config.ASIC_160F_131))
+        if substantialHardshipCreditCard:
+            contract.likelySubstantialHardship = True
+
+    if contract.smallAmountCredit:
+        consumer.debtorInDefaultOfOtherSmallAmount = bool_input("  %s was in default as debtor under another small "
+                                                                "amount credit contract " %consumer.name)
+        consumer.debtorUnder2SmallAmountIn90 = bool_input("  %s was a debtor under 2 or more other small amount credit "
+                                                          "contracts between %s and %s " %(consumer.name,
+                                                          (assessment.day - timedelta(days=90)).strftime('%d %b %Y'),
+                                                          assessment.day.strftime('%d %b %Y')))
+
+    substantialHardshipOther = bool_input("  any other factors indicating that %s would suffer substantial hardship "
+                                          "in meeting their financial obligations under the credit contract "
+                                          %consumer.name)
+    if substantialHardshipOther:
+        contract.likelySubstantialHardship = True
+
+
+    for check in unsuitableChecks:
+        unsuitableChecks[check] = bool_input(check)
+        if unsuitableChecks[check]:
+            contract.isUnsuitable = True
+
+    if substantialHardshipResidence and (not contract.likelySubstantialHardship):
+        substantialHardshipResidenceRefute = bool_input("Can it be proven that selling their principal place of "
+                                                        "residence to comply with their financial obligations"
+                                                        " would not have inflicted "
+                                                        "substantial hardship on %s? " %consumer.name)
+        if substantialHardshipResidenceRefute == False:
+            contract.likelySubstantialHardship = True
+
+    if ((consumer.debtorInDefaultOfOtherSmallAmount or consumer.debtorUnder2SmallAmountIn90) and
+            (not contract.likelySubstantialHardship)):
+        substantialHardshipDebtorRefute = bool_input("Can it be proven that %s's circumstances as a current small amount"
+                                                     " credit contract debtor did not indicate that compliance with "
+                                                     "the new credit contract would cause substantial hardship? "
+                                                     %consumer.name)
+        if substantialHardshipDebtorRefute == False:
+            contract.likelySubstantialHardship = True
+
+    if contract.likelySubstantialHardship:
+        contract.isUnsuitable = True
+
+
+    contract.deemedUnsuitable = bool_input("Did %s deem the contract to be unsuitable for %s? "
+                                           %(licensee.name, consumer.name))
+
+    if ((contract.isUnsuitable) and (contract.deemedUnsuitable == False)):
+        c131.append("failing to correctly assess the credit contract as unsuitable for %s" %consumer.name)
+
+        if c131:
+            localContraventions["s131"] = c131
+
+        if localContraventions:
+            civilUnits += 5000
+
+    return assessment, contract, consumer, localContraventions, civilUnits, criminalUnits
+
+
+def s132(licensee, consumer, contract, civilUnits, criminalUnits):
+    c132_1 = []
+    c132_2 = []
+    c132_3 = []
+    c132_4 = []
+    localContraventions = {}
+    #(1)
+    consumerRequestedAssessmentPriorToCreditDay = bool_input("Did %s request a copy of the assessment from %s prior to %s? "
+                  %(consumer.name, licensee.name, contract.creditDay.strftime('%d %b %Y')))
+    if consumerRequestedAssessmentPriorToCreditDay:
+        consumerGivenAssessmentPriorToCreditDay = bool_input("For each request, did %s give %s a written copy of the assessment prior "
+                                                             "to %s? "
+                  %(licensee.name, consumer.name, contract.creditDay.strftime('%d %b %Y')))
+        if consumerGivenAssessmentPriorToCreditDay == False:
+            civilUnits += 5000
+            c132_1.append("failing to give %s a copy of the assessment prior to entering the contract as requested"
+                          %consumer.name)
+    #(2)
+    consumerRequestedAssessmentWithin2Years = bool_input("Did %s request a copy of the assessment from %s between %s "
+                                                         "and %s? " %
+                                                     (consumer.name, licensee.name,
+                                                      contract.creditDay.strftime('%d %b %Y'),
+                                                      (contract.creditDay+timedelta(days=365*2)).strftime('%d %b %Y')))
+    if consumerRequestedAssessmentWithin2Years:
+        consumerGivenAssessmentWithin7Days = bool_input("For each request, did %s give %s a written copy of the "
+                                                        "assessment within 7 business days? " #TODO LOOP FOR ALL REQUESTS
+                                                             % (licensee.name, consumer.name))
+        if consumerGivenAssessmentWithin7Days == False:
+            civilUnits += 5000
+            criminalUnits += 50
+            c132_2.append("failing to give %s a copy of the assessment within 7 business days of %s's request(s)"
+                          % (consumer.name, consumer.name))
+
+    consumerRequestedAssessmentWithinPeriod = bool_input("Did %s request a copy of the assessment from %s between %s "
+                                                         "and %s? " %
+                                                         (consumer.name, licensee.name,
+                                                          (contract.creditDay + timedelta(days=365 * 2)).strftime(
+                                                              '%d %b %Y'),
+                                                          (contract.creditDay + timedelta(days=365 * 7)).strftime(
+                                                              '%d %b %Y')))
+    if consumerRequestedAssessmentWithinPeriod:
+        consumerGivenAssessmentWithin21Days = bool_input("For each request, did %s give %s a written copy of the "
+                                                        "assessment within 21 business days? "  # TODO LOOP FOR ALL REQUESTS
+                                                        % (licensee.name, consumer.name))
+        if consumerGivenAssessmentWithin21Days == False:
+            civilUnits += 5000
+            criminalUnits += 50
+            c132_2.append("failing to give %s a copy of the assessment within 21 business days of %s's request(s)"
+                          % (consumer.name, consumer.name))
+
+    #(3)
+    assessmentGivenAsPrescribed = bool_input("In all cases, did %s give %s the copy of the assessment in accordance "
+                                             "with any manner prescribed by the regulations? "
+                                             %(licensee.name, consumer.name))
+    if assessmentGivenAsPrescribed == False:
+        c132_3.append("failing to give %s a copy of the assessment in accordance with the manner prescribed by the "
+                      "regulations"
+                      % consumer.name)
+
+    #(4)
+    assessmentPaymentAsked = bool_input("In any cases, did %s request or demand payment from %s for giving %s a copy "
+                                        "of the assessment? " %(licensee.name, consumer.name, consumer.name))
+    if assessmentPaymentAsked == False:
+        c132_4.append("requesting or demanding payment from %s for giving a copy of the assessment "
+                      % consumer.name)
+        civilUnits += 5000
+        criminalUnits += 50
+
+    if c132_1:
+        localContraventions["s132(1)"] = c132_1
+
+    if c132_2:
+        localContraventions["s132(2)"] = c132_2
+
+    if c132_3:
+        localContraventions["s132(3)"] = c132_3
+
+    if c132_4:
+        localContraventions["s132(4)"] = c132_4
+
+    return contract, civilUnits, criminalUnits, localContraventions
+
+
+def s133(licensee, consumer, contract, civilUnits, criminalUnits):
+    localContraventions = {}
+    c133_1 = []
+    if contract.isUnsuitable:
+        regulationsPrescribeNotUnsuitable = bool_input("Do the regulations prescribe any particular situation matching "
+                                                       "the currently considered circumstances in which a credit "
+                                                       "contract is taken not to be unsuitable for a consumer? ")
+        # TODO a formalist would arguably include the above as a defence in s131 as well.
+        #  However, the presence of this provision only in s133 (as opposed to all other subsections other than (1)
+        #  in 133 also being in 131) suggests this was not the intent. Review of the explanatory memoranda has not shed
+        #  any further light on this.
+        if regulationsPrescribeNotUnsuitable == False:
+            c133_1.append("entering into a contract with %s as a debtor which is unsuitable for %s")
+            civilUnits += 5000
+            criminalUnits += imprisonment2PenaltyUnits(12*2)
+
+    if c133_1:
+        localContraventions["s133(1)"] = c133_1
+
+    return localContraventions, civilUnits, criminalUnits
+
+
 def s126_127__practicable(licensee, consumer, apparentDate, suppliedDate):
     #Some function to determine if the time taken to supply credit guide was "as soon as practicable"
     return True #TODO
+
+def s130_unsuitable(contract):
+    #Some function to determine if contract was unsuitable: (at current, ask user)
+    contract.isUnsuitable = bool_input("Was the contract unsuitable?")
+    return contract
+
+
 
 

@@ -21,6 +21,12 @@ class Contract:
         self.creditLimit = 0
         self.term = 0
         self.smallAmountCredit = False
+        self.creditDay = None
+        self.likelySubstantialHardship = None
+        self.deemedUnsuitable = None
+        self.isUnsuitable = None
+        self.notMeetRequirements = None
+        self.otherwiseUnsuitable = None
 
 
 class document:
@@ -55,6 +61,8 @@ class Entity:
         self.consumer = False
         self.ADI = False
         self.holdsWithADI = False
+        self.debtorInDefaultOfOtherSmallAmount = None
+        self.debtorUnder2SmallAmountIn90 = None
 
 
 class Trust:

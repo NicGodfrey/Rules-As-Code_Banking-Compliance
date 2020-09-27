@@ -3,7 +3,7 @@ from Functions import *
 import NCCPA
 import config
 import Results
-
+import time
 import textwrap
 
 def main():
@@ -14,7 +14,7 @@ def main():
     Contraventions = {}
     civilUnits = int(0)
     criminalUnits = int(0)
-    strictLiability = ["s126(1)","s126(2)","s126(4), s127(1)","s127(2)","s127(4)"]
+    strictLiability = ["s126(1)","s126(2)","s126(4), s127(1)","s127(2)","s127(4)", "s132(1)", "s132(2)", "s132(4)"]
 
     for party in Parties:
         numTrusteesInput = 0
@@ -72,6 +72,7 @@ def main():
         civilUnits = s126vars[2]
         criminalUnits = s126vars[3]
 
+    # Evaluate s127
     if (Entities[0].creditProvider and Entities[0].licensee and Entities[1].consumer and (contract.assigned == True)):
         s127vars = NCCPA.s127(Entities[0], Entities[1], contract, civilUnits, criminalUnits)
         creditGuide = s127vars[0]
@@ -79,6 +80,7 @@ def main():
         civilUnits = s127vars[2]
         criminalUnits = s127vars[3]
 
+    # Evaluate s128
     if (Entities[0].creditProvider and Entities[0].licensee and Entities[1].consumer and contract.exists):
         #TODO add 'or' that licensee increased or represented possiblity to increase limit
         s128vars = NCCPA.s128(Entities[0], Entities[1], contract, civilUnits, criminalUnits, ADIProviders)
@@ -86,18 +88,40 @@ def main():
         Contraventions.update(s128vars[1])
         civilUnits = s128vars[2]
         criminalUnits = s128vars[3]
+        contract = s128vars[4]
 
+    #Evaluate s131
+    if (Entities[0].creditProvider and Entities[0].licensee and Entities[1].consumer and contract.exists and assessment.exists):
+        s131vars = NCCPA.s131(Entities[0], Entities[1], contract, assessment, civilUnits, criminalUnits)
+        assessment = s131vars[0]
+        contract = s131vars[1]
+        Entities[1] = s131vars[2]
+        Contraventions.update(s131vars[3])
+        civilUnits = s131vars[4]
+        criminalUnits = s131vars[5]
 
+    #Evaluate s132
+    if (Entities[0].creditProvider and Entities[0].licensee and Entities[1].consumer and contract.exists and assessment.exists):
+        s132vars = NCCPA.s132(Entities[0], Entities[1], contract, civilUnits, criminalUnits)
+        contract = s132vars[0]
+        Contraventions.update(s132vars[3])
+        civilUnits = s132vars[1]
+        criminalUnits = s132vars[2]
 
+    #Evaluate s133
+    if (Entities[0].creditProvider and Entities[0].licensee and Entities[1].consumer and contract.exists and assessment.exists):
+        s133vars = NCCPA.s133(Entities[0], Entities[1], contract, civilUnits, criminalUnits)
+        Contraventions.update(s133vars[0])
+        civilUnits = s133vars[1]
+        criminalUnits = s133vars[2]
 
-    print(contract.__dict__)
-    print(Entities[0].__dict__)
-    print(Entities[1].__dict__)
+    time.sleep(1)
 
     # State compliance
     wrap = textwrap.TextWrapper(width=100)
 
     print('\n\nDetermination: \n')
+    print("The following determination takes into account " + config.consideredLaw)
 
     if Contraventions:
         para = (Entities[0].name + " has failed to be fully compliant with Chapter III of the National Consumer Credit "
