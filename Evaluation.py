@@ -21,7 +21,10 @@ def main():
         trustExists = False
         nameInput = input("%s Name: " % party)
         typeInput = input("%s Type: " % party)
-        if str.casefold(typeInput) == "trust":
+        if typeInput:
+            type = str.casefold(typeInput)
+        else: type = None
+        if type == "trust":
             numTrusteesInput = input("How many trustees did %s have at the relevant time? " % nameInput)
             try:
                 numTrusteesInput = int(numTrusteesInput)
@@ -42,7 +45,9 @@ def main():
     isPerson(Entities[0], Trusts[0])
     isPerson(Entities[1], Trusts[1])
     if isLicensee(Entities[0]) == None:
-        Results.Uncertainties.append("\t\t\t --Whether %s held a license." % Entities[0].name) #TODO ASSUMPTION?
+        Results.Uncertainties.append("\t\t\t --Whether %s held a license. For the purposes of this determination, "
+                                     "this is assumed to be true." % Entities[0].name) #TODO ASSUMPTION?
+        Entities[0].licensee = True
     isConsumer(Entities[1])
     ADIVars = holdsWithADI(Entities[1], Entities[0])
     ADIProviders = ADIVars
@@ -59,9 +64,8 @@ def main():
             Results.Uncertainties.append("\t\t\t --Whether a contract existed or was represented. This has been assumed "
                                  "true so as to assume the existence of a credit contract for the purposes of the Act.")
 
-
-
-    isSmallAmountCreditContract(contract, Entities[0])
+    if contract.exists:
+        isSmallAmountCreditContract(contract, Entities[0])
 
     # Evaluate s126
     if (Entities[0].creditProvider and Entities[0].licensee and Entities[1].consumer and contract.exists

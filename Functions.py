@@ -2,6 +2,7 @@ from tribool import Tribool
 
 def bool_input(string):
     preConversionInput = input(string)
+    print(preConversionInput)
     if preConversionInput == "":
         preConversionInput = None
     try:
