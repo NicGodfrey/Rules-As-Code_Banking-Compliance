@@ -30,6 +30,12 @@ class Contract:
         self.otherwiseUnsuitable = None
         self.contemplatesMultipleCredit = None
         self.paymentOwed = None
+        self.forResidentialProperty = None
+        self.securedByMortgageOverPurchasedProperty = None
+        self.s128_period = 90
+        self.isStandardForm = None
+        self.isStandardHomeLoan = None
+        self.isToRefinanceCreditProvidedToPurchaseResidentialProperty = None
 
 
 class document:
@@ -167,7 +173,7 @@ def creditProvided(provider, debtor, contract):
             provider.creditProvider = True
             contract.credit = True
             contract.creditLimit = int(input("What is the credit limit, in dollars, of the contract? "))
-            contract.term = int(input("What is term, in days, of the contract? "))
+            contract.term = int(input("What is the term, in days, of the contract? "))
 
         elif ((paymentOwed == None) or (debtIncurred == None)):
             Results.Uncertainties.append("\t\t\t --Whether, under the contract, payment was owed or a debt incurred "
@@ -177,7 +183,7 @@ def creditProvided(provider, debtor, contract):
             provider.creditProvider = True
             contract.credit = True
             contract.creditLimit = int(input("What is the credit limit, in dollars, of the contract? "))
-            contract.term = int(input("What is term, in days, of the contract? "))
+            contract.term = int(input("What is the term, in days, of the contract? "))
 
         else:
             provider.creditProvider = False
@@ -250,6 +256,20 @@ def isSmallAmountCreditContract(contract, provider):
         #TODO SOMETHING
 
 
+def isStandardHomeLoan(contract):
+    contract.isStandardForm = bool_input("Is the credit contract of a standard form? ")
+    if contract.isStandardForm:
+        if contract.forResidentialProperty:
+            contract.isStandardHomeLoan = True
+        else:
+            contract.isToRefinanceCreditProvidedToPurchaseResidentialProperty = bool_input("Was the credit provided to "
+                                                                                           "refinance credit that has "
+                                                                                           "been provided wholly or "
+                                                                                           "predominantly to purchase "
+                                                                                           "residential property?")
+            if contract.isToRefinanceCreditProvidedToPurchaseResidentialProperty:
+                contract.isStandardHomeLoan = True
+
 
 
 def isStrataCorporation(entity):
@@ -264,6 +284,17 @@ def smallAmountCreditContractRegulations(contract):
     #TODO include regulation conditions
     return True
 
+
+def reverseMortgageCredit(contract):
+    contract.isForReverseMortgage = bool_input("Was the credit to be used to secure a reverse mortgage over a dwelling "
+                                               "or land?")
+    if contract.isForReverseMortgage == None:
+        Results.Uncertainties.append(
+            "\t\t\t --Whether the credit was to be used in securing a reverse mortgage over a dwelling or land. "
+            "This is relevant for determining whether r28HA of the National Consumer Credit Protection Regulations "
+            "2010 applies.")
+
+
 def s15_1_b(entity):
     trusteeAtTimeWith2 = bool_input("Was the current sole trustee of %s a trustee at a time when it had two or "
                   "more trustees? " %entity.name)
@@ -277,3 +308,11 @@ def s15_1_b(entity):
             % (entity.name))
 
 
+def define_s128Period(contract):
+    contract.forResidentialProperty = bool_input("Was the credit provided under the contract to be used for the purchase "
+                                                 "of a residential property? ")
+    if contract.forResidentialProperty:
+        contract.securedByMortgageOverPurchasedProperty = bool_input("Was the credit to be secured by a mortgage over "
+                                                                     "the property? ")
+        if contract.securedByMortgageOverPurchasedProperty:
+            contract.s128_period = 120

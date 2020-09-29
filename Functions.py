@@ -1,9 +1,10 @@
 from tribool import Tribool
+import config
 
 def bool_input(string):
     preConversionInput = input(string)
     print(preConversionInput)
-    if preConversionInput == "":
+    if (preConversionInput == "") or (preConversionInput == "?"):
         preConversionInput = None
     try:
         convertedAnswer = Tribool(bool(int(preConversionInput)))
@@ -17,7 +18,8 @@ def bool_input(string):
             convertedAnswer = Tribool()
     finally:
         convertedAnswerVal = convertedAnswer.value
-        print("\t" * 10 + str(convertedAnswer))
+        if config.unitTesting:
+            print("\t" * 10 + str(convertedAnswer))
         return convertedAnswerVal
 
 def imprisonment2PenaltyUnits(months):

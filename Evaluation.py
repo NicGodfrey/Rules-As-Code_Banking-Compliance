@@ -7,6 +7,46 @@ import time
 import textwrap
 
 def main():
+    wrap = textwrap.TextWrapper(width=150)
+
+    print("RULES AS CODE -- Selected Provisions of Chapter III of the National Consumer Credit Protection Act 2009 "
+          "(Cth)\n")
+    print("Please respond to the input prompts, in order to generate a determination.\n")
+    para = ("Most questions will be of a Boolean type (True/False) or a 'Yes'/'No' type. For ease of answering, "
+            "these questions can be answered with binary input, where 1 = Positive (True/Yes) and 0 = Negative "
+            "(False/No). Response can be "
+            "submitted by pressing 'enter'.\n"
+            )
+    wrappedDecision = wrap.wrap(text=para)
+    for line in wrappedDecision:
+        print(line)
+    para = ("To accomodate for the reality that not all facts of a scenario are always known, these questions can also "
+            "be answered as 'Indeterminate'. To answer 'unknown', input a '?' or simply press 'enter' without "
+            "responding. If a response is not recognised, it will be registered as 'indeterminate' and a warning will "
+            "be displayed. \n"
+            )
+    wrappedDecision = wrap.wrap(text=para)
+    for line in wrappedDecision:
+        print(line)
+    para = ("Other inputs will have specific format requirements which are displayed with the question, such as "
+            "[dd/mm/yyyy]. Please respond in these exact formats to ensure the determination is correctly made. ")
+    wrappedDecision = wrap.wrap(text=para)
+    for line in wrappedDecision:
+        print(line)
+    print("")
+    begin = None
+    while (not begin):
+        begin = bool_input("Please respond to this prompt with a positive input to begin: ")
+        if (not begin):
+            if begin == None:
+                print("You entered 'Indeterminate' please try again.")
+            else:
+                try:
+                    print("You entered '" + str(begin) + "' please try again.")
+                except:
+                    print("You entered 'Indeterminate' please try again.")
+
+
     # Initial Inputs
     Parties = ["Provider", "Debtor"]
     Entities = []
@@ -15,6 +55,7 @@ def main():
     civilUnits = int(0)
     criminalUnits = int(0)
     strictLiability = ["s126(1)","s126(2)","s126(4), s127(1)","s127(2)","s127(4)", "s132(1)", "s132(2)", "s132(4)"]
+
 
     for party in Parties:
         numTrusteesInput = 0
@@ -66,6 +107,8 @@ def main():
 
     if contract.exists:
         isSmallAmountCreditContract(contract, Entities[0])
+        define_s128Period(contract)
+        reverseMortgageCredit(contract)
 
     # Evaluate s126
     if (Entities[0].creditProvider and Entities[0].licensee and Entities[1].consumer and contract.exists
@@ -122,8 +165,6 @@ def main():
     time.sleep(1)
 
     # State compliance
-    wrap = textwrap.TextWrapper(width=100)
-
     print('\n\nDetermination: \n')
     print("The following determination takes into account " + config.consideredLaw)
 

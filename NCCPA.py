@@ -192,11 +192,11 @@ def s128(licensee, consumer, contract, civilUnits, criminalUnits, ADIProviders):
     assessmentContraventions = []
     localContraventions = {}
 
-    assessmentRequirements = {"  specifies the period the assessment covers ": assessment.specifiesPeriod,
-                               "  assesses whether the credit contract will be unsuitable for %s if the contract is "
-                               "entered into or the credit limit increases during the specified period " %consumer.name:
+    assessmentRequirements = {"  specified the period the assessment covers ": assessment.specifiesPeriod,
+                               "  assessed whether the credit contract would be unsuitable for %s if the contract was "
+                               "entered into or the credit limit increased during the specified period " %consumer.name:
                                    assessment.assesses,
-                               "  covers the period in which the credit day occurs " : assessment.coversCreditDay
+                               "  covered the period in which the credit day occurs " : assessment.coversCreditDay
                                }
 
     contract.creditDay = datetime.strptime(input("On what day was the credit contract entered into? (dd/mm/yyyy) " ),'%d/%m/%Y')
@@ -205,14 +205,21 @@ def s128(licensee, consumer, contract, civilUnits, criminalUnits, ADIProviders):
 
     if assessment.exists:
         assessment.day = datetime.strptime(input("On what day was the assessment made? (dd/mm/yyyy) " ),'%d/%m/%Y')
-        if (contract.creditDay - assessment.day).days > 90:
-            c128.append("failing to assess the suitability of the credit contract within 90 days of the credit day")
-        print("Which of the following are true? The provided credit guide: ")
+        if (contract.creditDay - assessment.day).days > contract.s128_period:
+            if contract.s128_period == 120:
+                c128.append("failing to assess the suitability of the credit contract within 120 days of the credit day")
+            else:
+                c128.append("failing to assess the suitability of the credit contract within 90 days of the credit day")
+        print("Which of the following are true? The assessment: ")
         for req in assessmentRequirements:
-            assessmentRequirements[req] = bool_input(req) #TODO UNCERTAINTY
+            assessmentRequirements[req] = bool_input(req)
             if assessmentRequirements[req] == False:
                 assessmentContraventions.append(req)
-    #elif indeterminate
+            elif assessmentRequirements[req] == None:
+                Results.Uncertainties.append("\t\t\t --Whether the assessment" + req[1:-1] + ". This is relevant for "
+                                                                                               "determining whether "
+                                                                                               "s128(c) has been "
+                                                                                               "breached.")
     else:
         c128_c.append("failing to assess the suitability of the credit contract with %s" % consumer.name)
 
@@ -232,6 +239,8 @@ def s128(licensee, consumer, contract, civilUnits, criminalUnits, ADIProviders):
                           ' and ' + assessmentContraventionsLast)
         else:
             c128_c.append("failing to make an assessment which " + assessmentContraventionsLast)
+    if c128:
+        localContraventions["s128"] = c128
     if c128_c:
         localContraventions["s128(c)"] = c128_c
     if c128_d:
@@ -244,26 +253,88 @@ def s128(licensee, consumer, contract, civilUnits, criminalUnits, ADIProviders):
 
 def s130(licensee, consumer, contract, civilUnits, ADIProviders):
     c130 = []
-    if bool_input("Did %s make reasonable inquiries about %s's requirements and objectives in relation to the "
-                          "credit contract? " % (licensee.name, consumer.name)) == False:
+
+    s130_1_a = bool_input("Did %s make reasonable inquiries about %s's requirements and objectives in relation to the "
+                          "credit contract? " % (licensee.name, consumer.name))
+    if s130_1_a == False:
         c130.append("failing to make reasonable inquiries about %s's requirements and objectives in relation to the "
                     "credit contract" %consumer.name)
+    elif s130_1_a == None:
+        Results.Uncertainties.append("\t\t\t --Whether reasonable inquiries were made regarding"
+                                     " %s's requirements and objectives in relation to the credit contract."
+                                     %consumer.name)
 
-    if bool_input("Did %s make reasonable inquiries about %s's financial situation? "
-                          % (licensee.name, consumer.name))  == False:
+    s130_1_b = bool_input("Did %s make reasonable inquiries about %s's financial situation? "
+                          % (licensee.name, consumer.name))
+    if s130_1_b == False:
         c130.append("failing to make reasonable inquiries about %s's financial situation" %consumer.name)
+    elif s130_1_b == None:
+        Results.Uncertainties.append("\t\t\t --Whether reasonable inquiries were made regarding"
+                                         " %s's financial situation, and whether reasonable steps were taken by %s to "
+                                         "verify this." % consumer.name, licensee.name)
     else:
-        if bool_input("Did %s take reasonable steps to verify %s's financial situation? "
-                              % (licensee.name, consumer.name))  == False:
+        s130_1_c = bool_input("Did %s take reasonable steps to verify %s's financial situation? "
+                              % (licensee.name, consumer.name))
+        if s130_1_c == False:
             c130.append("failing to take reasonable steps to verify %s's financial situation" %consumer.name)
+        elif s130_1_c == None:
+            Results.Uncertainties.append("\t\t\t --Whether reasonable steps were taken by %s to verify %s's financial"
+                                         "situation." % licensee.name, consumer.name)
 
-    if bool_input("Did %s make all inquiries prescribed by the regulations? "
-                          % licensee.name) == False:
-        c130.append("failing to make all inquiries prescribed by the regulations")
+    if contract.isForReverseMortgage:
+        print("Did %s make reasonable inquiries about %s's requirements and objectives in meeting possible future "
+              "needs, including: " %(licensee.name, consumer.name))
+        r28HA_2_a = bool_input("  a possible need for aged care accomodation? ") #TODO
+        r28HA_2_b = bool_input("  whether %s prefers to leave equity in the dwelling or land to their estate? "
+                               %consumer.name)
+        if r28HA_2_a == False:
+            c130.append("failing to make reasonable inquiries about %s's possible need for aged care accomodation in "
+                        "the future"
+                % consumer.name)
+        elif r28HA_2_a == None:
+            Results.Uncertainties.append("\t\t\t --Whether %s made reasonable inquiries about %s's possible need for "
+                                         "aged care accomodation in the future. This is prescribed by r28HA(2)(a) of "
+                                         "the National Consumer Credit Protection Regulations 2010 and its absence "
+                                         "constitutes a breach of s130(d) of the Act. "
+                                         % (licensee.name, consumer.name))
+        if r28HA_2_b == False:
+            c130.append("failing to make reasonable inquiries whether %s prefers to leave equity in the dwelling or "
+                        "land to their estate"
+                % consumer.name)
+        elif r28HA_2_b == None:
+            Results.Uncertainties.append("\t\t\t --Whether %s made reasonable inquiries about whether %s prefers to "
+                                         "leave equity in the dwelling or land to their estate. This is prescribed by "
+                                         "r28HA(2)(b) of the National Consumer Credit Protection Regulations 2010 and "
+                                         "its absence constitutes a breach of s130(d) of the Act. "
+                                         % (licensee.name, consumer.name))
 
-    if bool_input("Did %s ake all steps prescribed by the regulations to verify any prescribed matters? "
-                      %licensee.name) == False:
+    r28JA = bool_input("Did %s make reasonable inquiries about the maximum credit limit %s required? "
+                              % (licensee.name, consumer.name))
+    if r28JA == False:
+        c130.append("failing to make reasonable inquiries about the maximum credit limit required by %s"
+                    % consumer.name)
+    elif r28JA == None:
+        Results.Uncertainties.append("\t\t\t --Whether %s made reasonable inquiries about the maximum credit limit "
+                                     "required by %s. This is prescribed by r28JA of the National Consumer Credit "
+                                     "Protection Regulations 2010 and its absence constitutes a breach of s130(d) of "
+                                     "the Act. " % (licensee.name, consumer.name))
+
+    s130_1_d_other = bool_input("Did %s make all other inquiries prescribed by the regulations? "
+                          % licensee.name)
+    if s130_1_d_other == False:
+        c130.append("failing to make all other inquiries prescribed by the regulations")
+    elif s130_1_d_other == None:
+        Results.Uncertainties.append("\t\t\t --Whether %s made all other inquiries prescribed by the regulations."
+                                     % licensee.name)
+
+    s_130_e = bool_input("Did %s take all steps prescribed by the regulations to verify any prescribed matters? "
+                      %licensee.name)
+    if s_130_e == False:
         c130.append("failing to take all steps prescribed by the regulations to verify any prescribed matters")
+    elif s_130_e == None:
+        Results.Uncertainties.append("\t\t\t --Whether %s took all steps prescribed by the regulatiosn to verify any "
+                                     "prescribed matters."
+                                     % licensee.name)
 
     #130(1A)
     c130_1A_breach = False
@@ -272,7 +343,7 @@ def s130(licensee, consumer, contract, civilUnits, ADIProviders):
             if not (bool_input("In making the required inquiries, did %s obtain and consider account statements that "
                                "cover the immediately preceding period of 90 days from %s? "
                                %(licensee.name, ADIProvider.name))):
-                c130.append("failing to to obtain and consider account statements covering the immediately preceding 90"
+                c130.append("failing to obtain and consider account statements covering the immediately preceding 90"
                             " days from %s" %ADIProvider.name)
 
     if c130:

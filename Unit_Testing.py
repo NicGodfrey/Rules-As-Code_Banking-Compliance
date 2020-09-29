@@ -15,11 +15,19 @@ class mainTests(unittest.TestCase):
 
     Uncertainties = Results.Uncertainties
 
-    mainSimpleInputs = ['Westpac Bank', 'corporate', 'Nic1', 'natural person', '1',
+    mainSimpleInputs = [
+        #Init
+        'Westpac Bank', 'corporate', 'Nic1', 'natural person', '1',
+        # Other Providers
                       '1', 'ANZ', 'corporate', '1', '1', 'BobBankingCo', 'partnership', '0', '1', 'Commonwealth Bank',
                       'corporate', '1', '0',
-                      '1', '1', '500', '27', '0', '0', '11/10/2019', '0', '12/10/2019', '1', '12/02/2019', '1', '0', '1',
-                      '1', '1', '1', '1', '1', '1', '0',
+        # Define Contract
+                      '1', '1', '500', '27', '0', '0', '1', '1', '1',
+        # s126
+                        '11/10/2019', '0',
+        #s128
+        '12/10/2019', '1', '12/02/2019', '1', '0', '1',
+                      '1', '1', '1', '0', '1', '1', '1', '0',
                         '1', '1', '0', '0', '1', '0', '0', '0', '0', '0',
                         '1', '1', '1', '1', '1', '0', '1', '1', '0'
                      ]
@@ -39,8 +47,9 @@ class mainTests(unittest.TestCase):
     mainLicenseUnknown = ['Westpac Bank', None, 'Nic2', 'natural person', None,
                         '1', 'ANZ', 'corporate', '1', '1', 'BobBankingCo', None, '0', '1', 'Commonwealth Bank',
                         'corporate', '1', '0',
-                        '1', '1', '500', '27', '0', None, '11/10/2019', '0', '12/10/2019', '1', '12/02/2019', '1', '0', '1',
-                        '1', '1', '1', '1', '1', '1', '0',
+                        '1', '1', '500', '27', '0', None, '1', '1', None,
+                          '11/10/2019', '0', '12/10/2019', '1', '12/02/2019', '1', '0', '1',
+                        '1', '1', '1', None, '1', '1', '1', '0',
                           '1', '1', '0', '0', '1', '0', '0', '0', '1', '1', '0',
                           '0', '0', '0', '1', '0'
                         ]
@@ -59,8 +68,15 @@ class mainTests(unittest.TestCase):
             "been assumed that they are a 'person' under the Act.",
             "\t\t\t --Whether Westpac Bank held a license. For the purposes of this "
                                          "determination, this is assumed to be true.",
-                                         "\t\t\t --Whether the amount of credit available under the contract "
-                                          "ordinarily increases as the amount of credit is reduced."
+            "\t\t\t --Whether the amount of credit available under the contract "
+                                          "ordinarily increases as the amount of credit is reduced.",
+            "\t\t\t --Whether the credit was to be used in securing a reverse mortgage over a dwelling or land. "
+            "This is relevant for determining whether r28HA of the National Consumer Credit Protection Regulations "
+            "2010 applies.",
+            "\t\t\t --Whether Westpac Bank made reasonable inquiries about the maximum credit limit "
+            "required by Nic2. This is prescribed by r28JA of the National Consumer Credit "
+            "Protection Regulations 2010 and its absence constitutes a breach of s130(d) of "
+            "the Act. "
                                          ])
 
 
@@ -83,9 +99,9 @@ class mainTests(unittest.TestCase):
 
 
     mainTrusteesNumberUnknown_CreditGuideProvidedUnknown = ['Westpac Bank', 'Trust', "Unknown", 'Nic4', 'natural person', '1',
-                        '0', '0', '1', '1', '6000', '232', '1', '1', '1',
+                        '0', '0', '1', '1', '6000', '232', '1', '1', '1', '0', '0',
                         '12/12/2019', 'Unknown', '20/12/2019', '1', '20/12/2018', '1', '1', '1',
-                        '1', '1', '1', '1', '1',
+                        '1', '1', '1', '1' '1', '1', '1',
                          '1', '1', '0', '0', '1', '0', '0', '0', '1', '1','0',
                          '1', '1', '0', '0', '1', '0', '0', '0', '1', '1'
                         ]
