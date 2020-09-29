@@ -3,7 +3,6 @@ import config
 
 def bool_input(string):
     preConversionInput = input(string)
-    print(preConversionInput)
     if (preConversionInput == "") or (preConversionInput == "?"):
         preConversionInput = None
     try:

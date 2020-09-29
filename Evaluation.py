@@ -8,9 +8,24 @@ import textwrap
 
 def main():
     wrap = textwrap.TextWrapper(width=150)
-
+    print("\n"*4)
+    print("""
+      _____         _                            _____            _                           _____  _                    _                _____  _____  _____ 
+     |  __ \       | |                          / ____|          | |                         / ____|| |                  | |              |_   _||_   _||_   _|
+     | |__) |_   _ | |  ___  ___    __ _  ___  | |      ___    __| |  ___   ______  ______  | |     | |__    __ _  _ __  | |_  ___  _ __    | |    | |    | |  
+     |  _  /| | | || | / _ \/ __|  / _` |/ __| | |     / _ \  / _` | / _ \ |______||______| | |     | '_ \  / _` || '_ \ | __|/ _ \| '__|   | |    | |    | |  
+     | | \ \| |_| || ||  __/\__ \ | (_| |\__ \ | |____| (_) || (_| ||  __/                  | |____ | | | || (_| || |_) || |_|  __/| |     _| |_  _| |_  _| |_ 
+     |_|  \_\\__,_||_| \___||___/  \__,_||___/  \_____|\___/  \__,_| \___|                   \_____||_| |_| \__,_|| .__/  \__|\___||_|    |_____||_____||_____|
+                                                                                                                  | |                                          
+                                                                                                                  |_|                                              
+        """)
+    print("===========================================================================================================")
+    print("")
     print("RULES AS CODE -- Selected Provisions of Chapter III of the National Consumer Credit Protection Act 2009 "
           "(Cth)\n")
+    print("===========================================================================================================")
+    print("")
+
     print("Please respond to the input prompts, in order to generate a determination.\n")
     para = ("Most questions will be of a Boolean type (True/False) or a 'Yes'/'No' type. For ease of answering, "
             "these questions can be answered with binary input, where 1 = Positive (True/Yes) and 0 = Negative "
