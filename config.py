@@ -10,7 +10,7 @@ individualTypes = ["natural person", "person", "individual", "human"]
  -- ASIC Credit (Unsuitability - Credit Cards) Instrument 2018/753
  -- Crimes Act 1914 (Cth) s4
  -- National Consumer Credit Protection Act 2009 (Cth) ss126-133
- -- National Consumer Credit Protection Regulatioins 2010 (Cth) ss28J-28JA
+ -- National Consumer Credit Protection Regulatioins 2010 (Cth) ss28HA-28JA
  -- Australian Securities and Investments Commission v Westpac Banking Corporation (2020) 380 ALR 262
  -- 
  """

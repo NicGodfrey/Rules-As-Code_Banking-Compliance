@@ -1,6 +1,9 @@
 # Digitising Chapter III of the NCCP Act 2009 (Cth)
 
-This repository attempts to convert selected provisions of the [National Consumer Credit Protection Act 2009 (Cth)](https://www.legislation.gov.au/Details/C2020C00215) ("the Act") as in force at 23 June 2020.
+This repository attempts to convert selected provisions of the [*National Consumer Credit Protection Act 2009* (Cth)](https://www.legislation.gov.au/Details/C2020C00215) ("the Act") as in force at 23 June 2020.
+
+## Disclaimer
+This application is designed to be used for academic & testing purposes only. It has not been designed by legal experts, and the information generated should not be relied upon in any way.
 
 ## Quick Installation (Run as an executable)
 
@@ -30,3 +33,12 @@ TODO
 
 ## Project Status
 This is a work in progress.
+
+## Legal Texts
+The following legal texts informed the programming of this application:
+- *National Consumer Credit Protection Act 2009* Cth
+- *National Consumer Credit Protection Regulations 2010* (Cth)
+- *Crimes Act 1914* (Cth)
+- *ASIC Credit (Unsuitability - Credit Cards) Instrument 2018/753*
+- *Australian Securities and Investments Commission v Westpac Banking Corporation* (2020) 380 ALR 262
+- *Australian Securities and Investments Commission v Cash Store Pty Ltd (in liquidation)* [2014] FCA 926
