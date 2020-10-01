@@ -5,9 +5,6 @@ daysInYear = 365 #TODO DEFINE A YEAR
 ASIC_160F_131 = daysInYear*3 #ASIC Credit (Unsuitability -- Credit Cards) Instrument 2018/753
 bodyCorporate = ["corporate", "trust", "body corporate", "corporation", "other", "corporate body", "partnership", "company", "LLC", "bank", "credit union"]
 individualTypes = ["natural person", "person", "individual", "human"]
-acceptedTypes = []
-acceptedTypes.append(bodyCorporate)
-acceptedTypes.append(individualTypes)
 
 """ This program considers the following legal texts:
  -- ASIC Credit (Unsuitability - Credit Cards) Instrument 2018/753

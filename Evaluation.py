@@ -81,7 +81,7 @@ def main():
     civilUnits = int(0)
     criminalUnits = int(0)
     strictLiability = ["s126(1)","s126(2)","s126(4), s127(1)","s127(2)","s127(4)", "s132(1)", "s132(2)", "s132(4)"]
-
+    acceptedTypes = config.bodyCorporate + config.individualTypes
 
     for party in Parties:
         numTrusteesInput = 0
@@ -105,7 +105,7 @@ def main():
                                      "2, so as to allow %s to be considered a 'person' as defined in the Act."
                                      % (nameInput,nameInput))
             trustExists = True
-        if (type in config.acceptedTypes) == False:
+        if (type in acceptedTypes) == False:
             typeClarify = None
             while (not typeClarify):
                 typeClarify = bool_input("Is the entity best described as a body corporate (1) or a "
