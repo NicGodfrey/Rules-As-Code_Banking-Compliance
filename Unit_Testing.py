@@ -15,7 +15,7 @@ class mainTests(unittest.TestCase):
 
     Uncertainties = Results.Uncertainties
 
-    mainSimpleInputs = [
+    mainSimpleInputs = ['1',
         #Init
         'Westpac Bank', 'corporate', 'Nic1', 'natural person', '1',
         # Other Providers
@@ -44,7 +44,8 @@ class mainTests(unittest.TestCase):
 
 
 
-    mainLicenseUnknown = ['Westpac Bank', None, 'Nic2', 'natural person', None,
+    mainLicenseUnknown = ['1',
+        'Westpac Bank', None, 'Nic2', 'natural person', None,
                         '1', 'ANZ', 'corporate', '1', '1', 'BobBankingCo', None, '0', '1', 'Commonwealth Bank',
                         'corporate', '1', '0',
                         '1', '1', '500', '27', '0', None, '1', '1', None,
@@ -80,7 +81,8 @@ class mainTests(unittest.TestCase):
                                          ])
 
 
-    mainNoContract = ['Westpac Bank', 'corporate', 'Nic3', 'natural person', '1',
+    mainNoContract = ['1',
+                      'Westpac Bank', 'corporate', 'Nic3', 'natural person', '1',
                          '0', '0', '0', '0', '0', '0'
                          ]
     @patch('builtins.input', side_effect=mainNoContract)
@@ -98,7 +100,8 @@ class mainTests(unittest.TestCase):
 
 
 
-    mainTrusteesNumberUnknown_CreditGuideProvidedUnknown = ['Westpac Bank', 'Trust', "Unknown", 'Nic4', 'natural person', '1',
+    mainTrusteesNumberUnknown_CreditGuideProvidedUnknown = ['1',
+                                                            'Westpac Bank', 'Trust', "Unknown", 'Nic4', 'natural person', '1',
                         '0', '0', '1', '1', '6000', '232', '1', '1', '1', '0', '0',
                         '12/12/2019', 'Unknown', '20/12/2019', '1', '20/12/2018', '1', '1', '1',
                         '1', '1', '1', '1' '1', '1', '1',

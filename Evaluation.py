@@ -11,15 +11,25 @@ def main():
     print("\n"*4)
     print("Last Updated: 29 September 2020")
     print("""
-      _____         _                            _____            _                           _____  _                    _                _____  _____  _____ 
-     |  __ \       | |                          / ____|          | |                         / ____|| |                  | |              |_   _||_   _||_   _|
-     | |__) |_   _ | |  ___  ___    __ _  ___  | |      ___    __| |  ___   ______  ______  | |     | |__    __ _  _ __  | |_  ___  _ __    | |    | |    | |  
-     |  _  /| | | || | / _ \/ __|  / _` |/ __| | |     / _ \  / _` | / _ \ |______||______| | |     | '_ \  / _` || '_ \ | __|/ _ \| '__|   | |    | |    | |  
-     | | \ \| |_| || ||  __/\__ \ | (_| |\__ \ | |____| (_) || (_| ||  __/                  | |____ | | | || (_| || |_) || |_|  __/| |     _| |_  _| |_  _| |_ 
-     |_|  \_\\__,_||_| \___||___/  \__,_| |___/  \_____|\___/  \__,_| \___|                   \_____||_| |_| \__,_|| .__/  \__|\___||_|    |_____||_____||_____|
-                                                                                                                  | |                                          
-                                                                                                                  |_|                                              
+  _____       _                          _____          _         
+ |  __ \     | |                        / ____|        | |        
+ | |__) |   _| | ___  ___    __ _ ___  | |     ___   __| | ___    
+ |  _  / | | | |/ _ \/ __|  / _` / __| | |    / _ \ / _` |/ _ \   
+ | | \ \ |_| | |  __/\__ \ | (_| \__ \ | |___| (_) | (_| |  __/   
+ |_|  \_\__,_|_|\___||___/  \__,_|___/  \_____\___/ \__,_|\___|   
+                                                                  
+                                                                                                                                                                                                    
         """)
+    print("""
+  _   _  _____ _____ _____                 _                      _____ _                 _              _____ _____ _____ 
+ | \ | |/ ____/ ____|  __ \      /\       | |                    / ____| |               | |            |_   _|_   _|_   _|
+ |  \| | |   | |    | |__) |    /  \   ___| |_   ______ ______  | |    | |__   __ _ _ __ | |_ ___ _ __    | |   | |   | |  
+ | . ` | |   | |    |  ___/    / /\ \ / __| __| |______|______| | |    | '_ \ / _` | '_ \| __/ _ \ '__|   | |   | |   | |  
+ | |\  | |___| |____| |       / ____ \ (__| |_                  | |____| | | | (_| | |_) | ||  __/ |     _| |_ _| |_ _| |_ 
+ |_| \_|\_____\_____|_|      /_/    \_\___|\__|                  \_____|_| |_|\__,_| .__/ \__\___|_|    |_____|_____|_____|
+                                                                                   | |                                     
+                                                                                   |_|                                     
+    """)
     print("===========================================================================================================")
     print("")
     print("RULES AS CODE -- Selected Provisions of Chapter III of the National Consumer Credit Protection Act 2009 "
@@ -27,7 +37,7 @@ def main():
     print("===========================================================================================================")
     print("")
 
-    print("Please respond to the input prompts, in order to generate a determination.\n")
+    print("Please respond to the input prompts in order to generate a determination.\n")
     para = ("Most questions will be of a Boolean type (True/False) or a 'Yes'/'No' type. For ease of answering, "
             "these questions can be answered with binary input, where 1 = Positive (True/Yes) and 0 = Negative "
             "(False/No). Response can be "
@@ -95,7 +105,21 @@ def main():
                                      "2, so as to allow %s to be considered a 'person' as defined in the Act."
                                      % (nameInput,nameInput))
             trustExists = True
-        Entities.append(Entity(nameInput, typeInput))
+        if (type in config.acceptedTypes) == False:
+            typeClarify = None
+            while (not typeClarify):
+                typeClarify = bool_input("Is the entity best described as a body corporate (1) or a "
+                                         "natural person/individual(0)? [1/0] ")
+                if typeClarify == 1:
+                    type = "corporate"
+                elif typeClarify == 0:
+                    type = "natural person"
+                else:
+                    type = None
+                    Results.Uncertainties.append(
+                        "\t\t\t --The type of entity that %s is. For the purposes of this determination, "
+                        "this is assumed to be a corporate body." % Entities[0].name)
+        Entities.append(Entity(nameInput, type))
         Trusts.append(Trust(nameInput, numTrusteesInput, trustExists))
 
     # Define the parties
@@ -103,7 +127,7 @@ def main():
     isPerson(Entities[1], Trusts[1])
     if isLicensee(Entities[0]) == None:
         Results.Uncertainties.append("\t\t\t --Whether %s held a license. For the purposes of this determination, "
-                                     "this is assumed to be true." % Entities[0].name) #TODO ASSUMPTION?
+                                     "this is assumed to be true." % Entities[0].name)
         Entities[0].licensee = True
     isConsumer(Entities[1])
     ADIVars = holdsWithADI(Entities[1], Entities[0])
@@ -156,12 +180,11 @@ def main():
     #Evaluate s131
     if (Entities[0].creditProvider and Entities[0].licensee and Entities[1].consumer and contract.exists and assessment.exists):
         s131vars = NCCPA.s131(Entities[0], Entities[1], contract, assessment, civilUnits, criminalUnits)
-        assessment = s131vars[0]
-        contract = s131vars[1]
-        Entities[1] = s131vars[2]
-        Contraventions.update(s131vars[3])
-        civilUnits = s131vars[4]
-        criminalUnits = s131vars[5]
+        contract = s131vars[0]
+        Entities[1] = s131vars[1]
+        Contraventions.update(s131vars[2])
+        civilUnits = s131vars[3]
+        criminalUnits = s131vars[4]
 
     #Evaluate s132
     if (Entities[0].creditProvider and Entities[0].licensee and Entities[1].consumer and contract.exists and assessment.exists):
@@ -179,6 +202,9 @@ def main():
         criminalUnits = s133vars[2]
 
     time.sleep(1)
+
+    if Entities[0].type in config.bodyCorporate:
+        criminalUnits = criminalUnits*5
 
     # State compliance
     print('\n\nDetermination: \n')

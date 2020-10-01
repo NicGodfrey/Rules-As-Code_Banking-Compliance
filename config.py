@@ -1,8 +1,13 @@
 unitTesting = False
 sectionsCovered = "sections 126-133 of the National Consumer Credit Protection Act 2009"
 consideredLaw = sectionsCovered
-daysInYear = 365
+daysInYear = 365 #TODO DEFINE A YEAR
 ASIC_160F_131 = daysInYear*3 #ASIC Credit (Unsuitability -- Credit Cards) Instrument 2018/753
+bodyCorporate = ["corporate", "trust", "body corporate", "corporation", "other", "corporate body", "partnership", "company", "LLC", "bank", "credit union"]
+individualTypes = ["natural person", "person", "individual", "human"]
+acceptedTypes = []
+acceptedTypes.append(bodyCorporate)
+acceptedTypes.append(individualTypes)
 
 """ This program considers the following legal texts:
  -- ASIC Credit (Unsuitability - Credit Cards) Instrument 2018/753
@@ -16,3 +21,4 @@ ASIC_160F_131 = daysInYear*3 #ASIC Credit (Unsuitability -- Credit Cards) Instru
 """ Limitations of this program include:
  -- Failure to account for time of incidents (eg. which legislative instruments are in force at given date)
  -- """
+

@@ -3,20 +3,20 @@
 # AIA = Acts Interpretation Act 1901 (Cth)
 # NCC = 'National Credit Code', Schedule 1 of the NCCPA
 import Results
-
+import config
 from Functions import *
 
 # Init Variables
 smallCreditLimit = 2000
-smallTermLimit = 365 #TODO DEFINE A YEAR
+smallTermLimit = config.daysInYear
 
 class Contract:
     def __init__(self, exists):
         self.exists = exists
-        self.party1 = ""
-        self.party2 = ""
-        self.credit = False
-        self.continuingCredit = False
+        self.party1 = None
+        self.party2 = None
+        self.credit = None
+        self.continuingCredit = None
         self.assigned = False
         self.represented = False
         self.creditLimit = 0

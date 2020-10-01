@@ -437,7 +437,7 @@ def s131(licensee, consumer, contract, assessment, civilUnits, criminalUnits):
         if localContraventions:
             civilUnits += 5000
 
-    return assessment, contract, consumer, localContraventions, civilUnits, criminalUnits
+    return contract, consumer, localContraventions, civilUnits, criminalUnits
 
 
 def s132(licensee, consumer, contract, civilUnits, criminalUnits):
