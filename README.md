@@ -7,7 +7,8 @@ This application is designed to be used for academic & testing purposes only. It
 
 ## Quick Installation (Run as an executable)
 
-Clone or download the repository as a ZIP. Navigate to 'dist\Evaluation.exe and run.
+Clone or download the repository as a ZIP. Navigate to 'dist' and run Evaluation.exe.\
+The program will open and run in your command console.
 
 ## Installation (Run as a python application)
 Clone or download the repository as above. 
@@ -36,9 +37,12 @@ This is a work in progress.
 
 ## Legal Texts
 The following legal texts informed the programming of this application:
+- *Acts Interpretation Act 1901* (Cth)
+- *Banking Act 1959* (Cth)
+- *Corporations Act 1914* (Cth)
+- *Crimes Act 1914* (Cth)
 - *National Consumer Credit Protection Act 2009* Cth
 - *National Consumer Credit Protection Regulations 2010* (Cth)
-- *Crimes Act 1914* (Cth)
 - *ASIC Credit (Unsuitability - Credit Cards) Instrument 2018/753*
 - *Australian Securities and Investments Commission v Westpac Banking Corporation* (2020) 380 ALR 262
 - *Australian Securities and Investments Commission v Cash Store Pty Ltd (in liquidation)* [2014] FCA 926

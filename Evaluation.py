@@ -110,15 +110,21 @@ def main():
             while (not typeClarify):
                 typeClarify = bool_input("Is the entity best described as a body corporate (1) or a "
                                          "natural person/individual(0)? [1/0] ")
-                if typeClarify == 1:
+                if typeClarify == True:
                     type = "corporate"
-                elif typeClarify == 0:
+                    Results.Uncertainties.append("\t\t\t --What type of entity Westpac Bank is. "
+                                                 "For the purposes of this determination, it has "
+            "been assumed that they are a 'person' under the Act.")
+                elif typeClarify == False:
                     type = "natural person"
+                    Results.Uncertainties.append("\t\t\t --What type of entity Westpac Bank is. For the purposes of "
+                                                 "this determination, it has "
+            "been assumed that they are a 'person' under the Act.")
                 else:
                     type = None
                     Results.Uncertainties.append(
                         "\t\t\t --The type of entity that %s is. For the purposes of this determination, "
-                        "this is assumed to be a corporate body." % Entities[0].name)
+                        "this is assumed to be a corporate body." % nameInput)
         Entities.append(Entity(nameInput, type))
         Trusts.append(Trust(nameInput, numTrusteesInput, trustExists))
 

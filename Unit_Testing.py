@@ -45,7 +45,7 @@ class mainTests(unittest.TestCase):
 
 
     mainLicenseUnknown = ['1',
-        'Westpac Bank', None, 'Nic2', 'natural person', None,
+        'Westpac Bank', None, '1', 'Nic2', 'natural person', None,
                         '1', 'ANZ', 'corporate', '1', '1', 'BobBankingCo', None, '0', '1', 'Commonwealth Bank',
                         'corporate', '1', '0',
                         '1', '1', '500', '27', '0', None, '1', '1', None,

@@ -544,6 +544,11 @@ def s133(licensee, consumer, contract, civilUnits, criminalUnits):
 
     return localContraventions, civilUnits, criminalUnits
 
+# s133AC is not called yet as it is a WIP
+def s133AC(licensee, consumer, civilUnits, criminalUnits):
+    licensee.hasWebsiteForHomeLoans = bool_input("Did %s have a website that could be accessed by consumers to apply "
+                                                 "for or make inquiries about one or more of its standard home loans? "
+                                                 %licensee.name)
 
 def s126_127__practicable(licensee, consumer, apparentDate, suppliedDate):
     #Some function to determine if the time taken to supply credit guide was "as soon as practicable"

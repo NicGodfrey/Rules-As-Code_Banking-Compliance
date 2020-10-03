@@ -295,6 +295,9 @@ def reverseMortgageCredit(contract):
             "2010 applies.")
 
 
+def standardHomeLoanKeyFactsSheet():
+    pass #TODO
+
 def s15_1_b(entity):
     trusteeAtTimeWith2 = bool_input("Was the current sole trustee of %s a trustee at a time when it had two or "
                   "more trustees? " %entity.name)
