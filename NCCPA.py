@@ -530,10 +530,6 @@ def s133(licensee, consumer, contract, civilUnits, criminalUnits):
         regulationsPrescribeNotUnsuitable = bool_input("Do the regulations prescribe any particular situation matching "
                                                        "the currently considered circumstances in which a credit "
                                                        "contract is taken not to be unsuitable for a consumer? ")
-        # TODO a formalist would arguably include the above as a defence in s131 as well.
-        #  However, the presence of this provision only in s133 (as opposed to all other subsections other than (1)
-        #  in 133 also being in 131) suggests this was not the intent. Review of the explanatory memoranda has not shed
-        #  any further light on this.
         if regulationsPrescribeNotUnsuitable == False:
             c133_1.append("entering into a contract with %s as a debtor which is unsuitable for %s")
             civilUnits += 5000
