@@ -8,7 +8,7 @@ This application is designed to be used for academic & testing purposes only. It
 ## Quick Installation (Run as an executable)
 
 Clone or download the repository as a ZIP. Navigate to 'dist\Evaluation\' and run Evaluation.exe.\
-The program will open and run in your command console.
+The program will open and run in your command console. For optimal experience, it is recommended that the console be maximised to full screen. 
 
 ## Installation (Run as a python application)
 Clone or download the repository as above. 
