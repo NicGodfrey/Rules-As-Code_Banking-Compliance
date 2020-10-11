@@ -206,6 +206,8 @@ def main():
         Contraventions.update(s133vars[0])
         civilUnits = s133vars[1]
         criminalUnits = s133vars[2]
+        contract = s133vars[3]
+        consumer = s133vars[4]
 
     time.sleep(1)
 

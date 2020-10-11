@@ -332,7 +332,7 @@ def s130(licensee, consumer, contract, civilUnits, ADIProviders):
     if s_130_e == False:
         c130.append("failing to take all steps prescribed by the regulations to verify any prescribed matters")
     elif s_130_e == None:
-        Results.Uncertainties.append("\t\t\t --Whether %s took all steps prescribed by the regulatiosn to verify any "
+        Results.Uncertainties.append("\t\t\t --Whether %s took all steps prescribed by the regulations to verify any "
                                      "prescribed matters."
                                      % licensee.name)
 
@@ -358,71 +358,16 @@ def s131(licensee, consumer, contract, assessment, civilUnits, criminalUnits):
     c131=[]
     localContraventions = {}
 
-    unsuitableChecks = {
-                        #"  %s would be unable to comply with their financial obligations under the contract without"
-                        #" substantial hardship" %consumer.name, #TODO 131(3)
-                              "  the contract would not meet %s's requirements or objectives " % consumer.name :
-                                  contract.notMeetRequirements,
-                              "  any other circumstances prescribed by the regulations in which the contract is "
-                              "unsuitable " : contract.otherwiseUnsuitable
-                              }
+    isUnsuitableVars = isUnsuitable(contract, consumer, licensee, assessment.day)
+    contract = isUnsuitableVars[0]
+    consumer = isUnsuitableVars[1]
 
-    contract.isCreditCard = bool_input("Was the contract a credit card contract? ")
-
-    print("Based off the inquiries made and using only information that %s had reason to believe was true, "
-          "which of the following were likely on %s if the contract was entered into or the credit limit increased "
-          "during the period covered by the assessment?: " %(licensee.name, assessment.day.strftime('%d %b %Y')))
-
-    substantialHardshipResidence = bool_input("  %s would only be able to comply with their financial obligations by "
-                                              "selling their principal place of residence " % consumer.name)
-
-    if (contract.isCreditCard):
-        substantialHardshipCreditCard = bool_input("  %s would be unable to comply with an obligation to repay"
-                                                            " $%s within %s days "
-                                                            %(consumer.name, contract.creditLimit,
-                                                              config.ASIC_160F_131))
-        if substantialHardshipCreditCard:
-            contract.likelySubstantialHardship = True
-
-    if contract.smallAmountCredit:
-        consumer.debtorInDefaultOfOtherSmallAmount = bool_input("  %s was in default as debtor under another small "
-                                                                "amount credit contract " %consumer.name)
-        consumer.debtorUnder2SmallAmountIn90 = bool_input("  %s was a debtor under 2 or more other small amount credit "
-                                                          "contracts between %s and %s " %(consumer.name,
-                                                          (assessment.day - timedelta(days=90)).strftime('%d %b %Y'),
-                                                          assessment.day.strftime('%d %b %Y')))
-
-    substantialHardshipOther = bool_input("  any other factors indicating that %s would suffer substantial hardship "
-                                          "in meeting their financial obligations under the credit contract "
-                                          %consumer.name)
-    if substantialHardshipOther:
-        contract.likelySubstantialHardship = True
-
-
-    for check in unsuitableChecks:
-        unsuitableChecks[check] = bool_input(check)
-        if unsuitableChecks[check]:
-            contract.isUnsuitable = True
-
-    if substantialHardshipResidence and (not contract.likelySubstantialHardship):
-        substantialHardshipResidenceRefute = bool_input("Can it be proven that selling their principal place of "
-                                                        "residence to comply with their financial obligations"
-                                                        " would not have inflicted "
-                                                        "substantial hardship on %s? " %consumer.name)
-        if substantialHardshipResidenceRefute == False:
-            contract.likelySubstantialHardship = True
-
-    if ((consumer.debtorInDefaultOfOtherSmallAmount or consumer.debtorUnder2SmallAmountIn90) and
-            (not contract.likelySubstantialHardship)):
-        substantialHardshipDebtorRefute = bool_input("Can it be proven that %s's circumstances as a current small amount"
-                                                     " credit contract debtor did not indicate that compliance with "
-                                                     "the new credit contract would cause substantial hardship? "
-                                                     %consumer.name)
-        if substantialHardshipDebtorRefute == False:
-            contract.likelySubstantialHardship = True
-
-    if contract.likelySubstantialHardship:
-        contract.isUnsuitable = True
+    contract.askSuitabilityAgain = bool_input("Between the assessment day (%s) and the day the "
+                                              "contract was entered into or the credit limit was "
+                                              "increased (%s), would the response to any of the "
+                                              "immediately previous checks have changed?"
+                                              %(assessment.day.strftime('%d %b %Y'),
+                                                contract.creditDay.strftime('%d %b %Y')))
 
 
     contract.deemedUnsuitable = bool_input("Did %s deem the contract to be unsuitable for %s? "
@@ -526,6 +471,12 @@ def s132(licensee, consumer, contract, civilUnits, criminalUnits):
 def s133(licensee, consumer, contract, civilUnits, criminalUnits):
     localContraventions = {}
     c133_1 = []
+
+    if contract.askSuitabilityAgain == True:
+        isUnsuitableVars = isUnsuitable(contract, consumer, licensee, contract.creditDay)
+        contract = isUnsuitableVars[0]
+        consumer = isUnsuitableVars[1]
+
     if contract.isUnsuitable:
         regulationsPrescribeNotUnsuitable = bool_input("Do the regulations prescribe any particular situation matching "
                                                        "the currently considered circumstances in which a credit "
@@ -538,7 +489,7 @@ def s133(licensee, consumer, contract, civilUnits, criminalUnits):
     if c133_1:
         localContraventions["s133(1)"] = c133_1
 
-    return localContraventions, civilUnits, criminalUnits
+    return localContraventions, civilUnits, criminalUnits, contract, consumer
 
 # s133AC is not called yet as it is a WIP
 def s133AC(licensee, consumer, civilUnits, criminalUnits):
@@ -550,10 +501,77 @@ def s126_127__practicable(licensee, consumer, apparentDate, suppliedDate):
     #Some function to determine if the time taken to supply credit guide was "as soon as practicable"
     return True #TODO
 
-def s130_unsuitable(contract):
+def isUnsuitable(contract, consumer, licensee, relevantDate):
     #Some function to determine if contract was unsuitable: (at current, ask user)
-    contract.isUnsuitable = bool_input("Was the contract unsuitable?")
-    return contract
+    unsuitableChecks = {
+                        #"  %s would be unable to comply with their financial obligations under the contract without"
+                        #" substantial hardship" %consumer.name, #TODO 131(3)
+                              "  the contract would not meet %s's requirements or objectives " % consumer.name :
+                                  contract.notMeetRequirements,
+                              "  any other circumstances prescribed by the regulations in which the contract is "
+                              "unsuitable " : contract.otherwiseUnsuitable
+                              }
+
+    contract.isCreditCard = bool_input("Was the contract a credit card contract? ")
+
+    print("Based off the inquiries made and using only information that %s had reason to believe was true, "
+          "which of the following were likely on %s if the contract was entered into or the credit limit increased "
+          "during the period covered by the assessment?: " %(licensee.name, relevantDate.strftime('%d %b %Y')))
+
+    substantialHardshipResidence = bool_input("  %s would only be able to comply with their financial obligations by "
+                                              "selling their principal place of residence " % consumer.name)
+
+    if (contract.isCreditCard):
+        substantialHardshipCreditCard = bool_input("  %s would be unable to comply with an obligation to repay"
+                                                            " $%s within %s days "
+                                                            %(consumer.name, contract.creditLimit,
+                                                              config.ASIC_160F_131))
+        if substantialHardshipCreditCard:
+            contract.likelySubstantialHardship = True
+
+    if contract.smallAmountCredit:
+        consumer.debtorInDefaultOfOtherSmallAmount = bool_input("  %s was in default as debtor under another small "
+                                                                "amount credit contract " %consumer.name)
+        consumer.debtorUnder2SmallAmountIn90 = bool_input("  %s was a debtor under 2 or more other "
+                                                          "small amount credit contracts between "
+                                                          "%s and %s " %(consumer.name,
+                                                          (relevantDate -
+                                                           timedelta(days=90)).strftime('%d %b %Y'),
+                                                          relevantDate.strftime('%d %b %Y')))
+
+    substantialHardshipOther = bool_input("  any other factors indicating that %s would suffer substantial hardship "
+                                          "in meeting their financial obligations under the credit contract "
+                                          %consumer.name)
+    if substantialHardshipOther:
+        contract.likelySubstantialHardship = True
+
+
+    for check in unsuitableChecks:
+        unsuitableChecks[check] = bool_input(check)
+        if unsuitableChecks[check]:
+            contract.isUnsuitable = True
+
+    if substantialHardshipResidence and (not contract.likelySubstantialHardship):
+        substantialHardshipResidenceRefute = bool_input("Can it be proven that selling their principal place of "
+                                                        "residence to comply with their financial obligations"
+                                                        " would not have inflicted "
+                                                        "substantial hardship on %s? " %consumer.name)
+        if substantialHardshipResidenceRefute == False:
+            contract.likelySubstantialHardship = True
+
+    if ((consumer.debtorInDefaultOfOtherSmallAmount or consumer.debtorUnder2SmallAmountIn90) and
+            (not contract.likelySubstantialHardship)):
+        substantialHardshipDebtorRefute = bool_input("Can it be proven that %s's circumstances as a current small amount"
+                                                     " credit contract debtor did not indicate that compliance with "
+                                                     "the new credit contract would cause substantial hardship? "
+                                                     %consumer.name)
+        if substantialHardshipDebtorRefute == False:
+            contract.likelySubstantialHardship = True
+
+    if contract.likelySubstantialHardship:
+        contract.isUnsuitable = True
+
+    return contract, consumer
 
 
 

@@ -36,6 +36,7 @@ class Contract:
         self.isStandardForm = None
         self.isStandardHomeLoan = None
         self.isToRefinanceCreditProvidedToPurchaseResidentialProperty = None
+        self.askSuitabilityAgain = None
 
 
 class document:

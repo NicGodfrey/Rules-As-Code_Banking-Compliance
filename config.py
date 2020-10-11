@@ -6,6 +6,7 @@ ASIC_160F_131 = daysInYear*3 #ASIC Credit (Unsuitability -- Credit Cards) Instru
 bodyCorporate = ["corporate", "trust", "body corporate", "corporation", "other", "corporate body", "partnership", "company", "LLC", "bank", "credit union"]
 individualTypes = ["natural person", "person", "individual", "human"]
 
+
 """ This program considers the following legal texts:
  -- Acts Interpretation Act 1901 (Cth) ss 2, 2C, 40A
  -- Banking Act 1959 (Cth) s 5
