@@ -30,7 +30,7 @@ Run Evaluation.py.
 
 
 ## License
-This project is licensed under the [*Attribution Non-Commercial Share-Alike 4.0 International*] (https://creativecommons.org/licenses/by-nc-sa/4.0/) license.\
+This project is licensed under the [*Attribution Non-Commercial Share-Alike 4.0 International*](https://creativecommons.org/licenses/by-nc-sa/4.0/) license.\
 You are free to share and adapt the material so long as you provide appropriate credit and indicate if changes are made. Further, any use of this code may not be used for commercial purposes, and, if adapted, must be released under this same license.\
 The full license is accessible [here](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
 

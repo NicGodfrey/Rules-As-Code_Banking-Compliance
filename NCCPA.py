@@ -138,7 +138,7 @@ def s127(licensee, consumer, contract, civilUnits, criminalUnits):
         # 127(2)
         print("Which of the following are true? The provided credit guide: ")
         for req in creditGuideRequirements:
-            creditGuideRequirements[req] = bool_input(req) #TODO UNCERTAINTY
+            creditGuideRequirements[req] = bool_input(req)
             if creditGuideRequirements[req] == False:
                 creditGuideContraventions.append(req)
             elif creditGuideRequirements[req] == None:
