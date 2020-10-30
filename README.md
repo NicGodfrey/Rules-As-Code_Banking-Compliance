@@ -5,7 +5,7 @@ This repository attempts to convert selected provisions of the [*National Consum
 ## Disclaimer
 This application is designed to be used for academic & testing purposes only. It has not been designed by legal experts, and the information generated should not be relied upon in any way.
 
-## Quick Installation (Run as an executable)
+## Quick Installation (Run as an executable on Windows) 
 
 Clone or download the repository as a ZIP. Navigate to 'dist\Evaluation\' and run Evaluation.exe.\
 The program will open and run in your command console. For optimal experience, it is recommended that the console be maximised to full screen. 
@@ -30,7 +30,9 @@ Run Evaluation.py.
 
 
 ## License
-TODO
+This project is licensed under the [*Attribution Non-Commercial Share-Alike 4.0 International*] (https://creativecommons.org/licenses/by-nc-sa/4.0/) license.\
+You are free to share and adapt the material so long as you provide appropriate credit and indicate if changes are made. Further, any use of this code may not be used for commercial purposes, and, if adapted, must be released under this same license.\
+The full license is accessible [here](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
 
 ## Project Status
 This is a work in progress.
