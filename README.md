@@ -30,9 +30,10 @@ Run Evaluation.py.
 
 
 ## License
-This project is licensed under the [*Attribution Non-Commercial Share-Alike 4.0 International*](https://creativecommons.org/licenses/by-nc-sa/4.0/) license.\
+The application designed in this project is licensed under the [*Attribution Non-Commercial Share-Alike 4.0 International*](https://creativecommons.org/licenses/by-nc-sa/4.0/) license.\
 You are free to share and adapt the material so long as you provide appropriate credit and indicate if changes are made. Further, any use of this code may not be used for commercial purposes, and, if adapted, must be released under this same license.\
-The full license is accessible [here](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
+The full license is accessible [here](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).\
+Note that the companion article 'Rules as Code and the Interpretative Role of the Judiciary' is strictly not licensed for distribution or adaptaion.
 
 ## Project Status
 This is a work in progress.
